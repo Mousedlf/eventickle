@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Comedian{% endblock %}
+
+{% block body %}
+    <h1>Comedian</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ comedian.id }}</td>
+            </tr>
+            <tr>
+                <th>Name</th>
+                <td>{{ comedian.name }}</td>
+            </tr>
+            <tr>
+                <th>Surname</th>
+                <td>{{ comedian.surname }}</td>
+            </tr>
+            <tr>
+                <th>Links</th>
+                <td>{{ comedian.links ? comedian.links|join(', ') : '' }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_comedian_index') }}">back to list</a>
+
+    <a href="{{ path('app_comedian_edit', {'id': comedian.id}) }}">edit</a>
+
+    {{ include('comedian/_delete_form.html.twig') }}
+{% endblock %}

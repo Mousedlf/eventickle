@@ -14,6 +14,16 @@ class SecurityController extends AbstractController
     public function login(AuthenticationUtils $authenticationUtils, Request $request): Response
     {
 
+        if(
+            $this->getUser()->getComedian() == null
+            OR $this->getUser()->getSpectator() == null
+            OR $this->getUser()->getEstablishment() == null
+            OR $this->getUser()->getComedyClub() == null
+        ){
+            return $this->json("/".$this->getUser()->getRoles()[0]."/new/".$this->getUser()->getId(), Response::HTTP_UNAUTHORIZED);
+        }
+
+
         // if ($this->getUser()) {
         //     return $this->redirectToRoute('target_path');
         // }

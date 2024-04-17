@@ -30,6 +30,9 @@ class ComedyClub
     #[ORM\OneToMany(targetEntity: Invite::class, mappedBy: 'comedyClub')]
     private Collection $sentInvites;
 
+    #[ORM\OneToOne(inversedBy: 'comedyClub', cascade: ['persist', 'remove'])]
+    private ?User $ofUser = null;
+
     public function __construct()
     {
         $this->organizedEvents = new ArrayCollection();
@@ -109,6 +112,18 @@ class ComedyClub
                 $sentInvite->setComedyClub(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getOfUser(): ?User
+    {
+        return $this->ofUser;
+    }
+
+    public function setOfUser(?User $ofUser): static
+    {
+        $this->ofUser = $ofUser;
 
         return $this;
     }

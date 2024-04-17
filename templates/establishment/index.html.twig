@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Establishment index{% endblock %}
+
+{% block body %}
+    <h1>Establishment index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Siret</th>
+                <th>Description</th>
+                <th>Adress</th>
+                <th>Accessibility</th>
+                <th>Name</th>
+                <th>PhoneNumber</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for establishment in establishments %}
+            <tr>
+                <td>{{ establishment.id }}</td>
+                <td>{{ establishment.siret }}</td>
+                <td>{{ establishment.description }}</td>
+                <td>{{ establishment.adress }}</td>
+                <td>{{ establishment.accessibility ? establishment.accessibility|join(', ') : '' }}</td>
+                <td>{{ establishment.name }}</td>
+                <td>{{ establishment.phoneNumber }}</td>
+                <td>
+                    <a href="{{ path('app_establishment_show', {'id': establishment.id}) }}">show</a>
+                    <a href="{{ path('app_establishment_edit', {'id': establishment.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="8">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_establishment_new') }}">Create new</a>
+{% endblock %}

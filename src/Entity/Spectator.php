@@ -42,6 +42,9 @@ class Spectator
     #[ORM\OneToMany(targetEntity: Ticket::class, mappedBy: 'spectator', orphanRemoval: true)]
     private Collection $tickets;
 
+    #[ORM\OneToOne(inversedBy: 'spectator', cascade: ['persist', 'remove'])]
+    private ?User $ofUser = null;
+
     public function __construct()
     {
         $this->followedComedians = new ArrayCollection();
@@ -173,6 +176,18 @@ class Spectator
                 $ticket->setSpectator(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getOfUser(): ?User
+    {
+        return $this->ofUser;
+    }
+
+    public function setOfUser(?User $ofUser): static
+    {
+        $this->ofUser = $ofUser;
 
         return $this;
     }

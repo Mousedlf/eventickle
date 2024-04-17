@@ -30,6 +30,7 @@ class UserAuthenticator extends AbstractLoginFormAuthenticator
     {
         $email = $request->getPayload()->getString('email');
 
+
         $request->getSession()->set(SecurityRequestAttributes::LAST_USERNAME, $email);
 
         return new Passport(
@@ -44,9 +45,19 @@ class UserAuthenticator extends AbstractLoginFormAuthenticator
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
+
+//        if(
+//            $this->getUser()->getComedian() == null
+//            OR $this->getUser()->getSpectator() == null
+//            OR $this->getUser()->getEstablishment() == null
+//            OR $this->getUser()->getComedyClub() == null
+//        ){
+//            return $this->json("/".$this->getUser()->getRoles()[0]."/new/".$this->getUser()->getId(), Response::HTTP_UNAUTHORIZED);
+//        }
         if ($targetPath = $this->getTargetPath($request->getSession(), $firewallName)) {
             return new RedirectResponse($targetPath);
         }
+
 
         // For example:
         // return new RedirectResponse($this->urlGenerator->generate('some_route'));
@@ -55,6 +66,7 @@ class UserAuthenticator extends AbstractLoginFormAuthenticator
 
     protected function getLoginUrl(Request $request): string
     {
+
         return $this->urlGenerator->generate(self::LOGIN_ROUTE);
     }
 }

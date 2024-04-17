@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\RegistrationFormType;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -15,10 +16,14 @@ use Symfony\Component\Serializer\SerializerInterface;
 class RegistrationController extends AbstractController
 {
     #[Route('/register', name: 'app_register')]
-    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager, SerializerInterface $serializer): Response
+    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager, SerializerInterface $serializer, UserRepository $repository): Response
     {
         $user = $serializer->deserialize($request->getContent(), User::class, 'json');
-
+        if($repository->findBy(["email"=>$user->getEmail()])){
+            return $this->json("User already exist !", Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
+        $tmprole = $user->getRoles()[0];
+        $user->setRoles(["ROLE_".strtoupper($tmprole)]);
         // encode the plain password
         $user->setPassword(
             $userPasswordHasher->hashPassword(
@@ -28,6 +33,9 @@ class RegistrationController extends AbstractController
         );
         $entityManager->persist($user);
         $entityManager->flush();
-        return $this->json($user, Response::HTTP_CREATED, [], ['groups' => ['user:read']]);
+
+        $url = "/".$tmprole."/new/".$user->getId();
+        
+        return $this->json($url, Response::HTTP_CREATED);
     }
 }

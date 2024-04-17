@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: ComedianRepository::class)]
 class Comedian
@@ -14,27 +15,33 @@ class Comedian
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['indexComedians', 'comedian:read'])]
     private ?int $id = null;
 
     /**
      * @var Collection<int, Event>
      */
     #[ORM\ManyToMany(targetEntity: Event::class, mappedBy: 'comedians')]
+    #[Groups(['comedian:read'])]
     private Collection $events;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['indexComedians', 'comedian:read'])]
     private ?string $name = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['indexComedians', 'comedian:read'])]
     private ?string $surname = null;
 
     #[ORM\Column(type: Types::ARRAY, nullable: true)]
+    #[Groups(['comedian:read'])]
     private ?array $links = null;
 
     /**
      * @var Collection<int, Spectator>
      */
     #[ORM\ManyToMany(targetEntity: Spectator::class, inversedBy: 'comedians')]
+    #[Groups(['comedian:read'])]
     private Collection $followers;
 
     /**
@@ -47,9 +54,11 @@ class Comedian
      * @var Collection<int, Like>
      */
     #[ORM\OneToMany(targetEntity: Like::class, mappedBy: 'comedian', orphanRemoval: true)]
+    #[Groups(['comedian:read'])]
     private Collection $likes;
 
     #[ORM\OneToOne(inversedBy: 'comedian', cascade: ['persist', 'remove'])]
+    #[Groups(['comedian:read'])]
     private ?Image $profilePicture = null;
 
     /**
@@ -57,6 +66,13 @@ class Comedian
      */
     #[ORM\OneToMany(targetEntity: Invite::class, mappedBy: 'sentToComedian')]
     private Collection $receivedInvites;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['indexComedians', 'comedian:read'])]
+    private ?string $description = null;
+
+    #[ORM\OneToOne(inversedBy: 'comedian', cascade: ['persist', 'remove'])]
+    private ?User $ofUser = null;
 
     public function __construct()
     {
@@ -251,6 +267,30 @@ class Comedian
                 $receivedInvite->setSentToComedian(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): static
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    public function getOfUser(): ?User
+    {
+        return $this->ofUser;
+    }
+
+    public function setOfUser(?User $ofUser): static
+    {
+        $this->ofUser = $ofUser;
 
         return $this;
     }

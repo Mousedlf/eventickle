@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Comedian{% endblock %}
+
+{% block body %}
+    <h1>Create new Comedian</h1>
+
+    {{ include('comedian/_form.html.twig') }}
+
+    <a href="{{ path('app_comedian_index') }}">back to list</a>
+{% endblock %}

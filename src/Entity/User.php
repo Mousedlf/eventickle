@@ -18,11 +18,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['user:read'])]
+    #[Groups(['user:read', 'comedian:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 180)]
-    #[Groups(['user:read'])]
+    #[Groups(['user:read', 'comedian:read'])]
     private ?string $email = null;
 
     /**
@@ -37,6 +37,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     #[ORM\Column]
     private ?string $password = null;
+
+    #[ORM\OneToOne(mappedBy: 'ofUser', cascade: ['persist', 'remove'])]
+    private ?Comedian $comedian = null;
+
+    #[ORM\OneToOne(mappedBy: 'ofUser', cascade: ['persist', 'remove'])]
+    private ?ComedyClub $comedyClub = null;
+
+    #[ORM\OneToOne(mappedBy: 'ofUser', cascade: ['persist', 'remove'])]
+    private ?Establishment $establishment = null;
+
+    #[ORM\OneToOne(mappedBy: 'ofUser', cascade: ['persist', 'remove'])]
+    private ?Spectator $spectator = null;
 
 
     public function getId(): ?int
@@ -112,6 +124,94 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
+    }
+
+    public function getComedian(): ?Comedian
+    {
+        return $this->comedian;
+    }
+
+    public function setComedian(?Comedian $comedian): static
+    {
+        // unset the owning side of the relation if necessary
+        if ($comedian === null && $this->comedian !== null) {
+            $this->comedian->setOfUser(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($comedian !== null && $comedian->getOfUser() !== $this) {
+            $comedian->setOfUser($this);
+        }
+
+        $this->comedian = $comedian;
+
+        return $this;
+    }
+
+    public function getComedyClub(): ?ComedyClub
+    {
+        return $this->comedyClub;
+    }
+
+    public function setComedyClub(?ComedyClub $comedyClub): static
+    {
+        // unset the owning side of the relation if necessary
+        if ($comedyClub === null && $this->comedyClub !== null) {
+            $this->comedyClub->setOfUser(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($comedyClub !== null && $comedyClub->getOfUser() !== $this) {
+            $comedyClub->setOfUser($this);
+        }
+
+        $this->comedyClub = $comedyClub;
+
+        return $this;
+    }
+
+    public function getEstablishment(): ?Establishment
+    {
+        return $this->establishment;
+    }
+
+    public function setEstablishment(?Establishment $establishment): static
+    {
+        // unset the owning side of the relation if necessary
+        if ($establishment === null && $this->establishment !== null) {
+            $this->establishment->setOfUser(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($establishment !== null && $establishment->getOfUser() !== $this) {
+            $establishment->setOfUser($this);
+        }
+
+        $this->establishment = $establishment;
+
+        return $this;
+    }
+
+    public function getSpectator(): ?Spectator
+    {
+        return $this->spectator;
+    }
+
+    public function setSpectator(?Spectator $spectator): static
+    {
+        // unset the owning side of the relation if necessary
+        if ($spectator === null && $this->spectator !== null) {
+            $this->spectator->setOfUser(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($spectator !== null && $spectator->getOfUser() !== $this) {
+            $spectator->setOfUser($this);
+        }
+
+        $this->spectator = $spectator;
+
+        return $this;
     }
 
 

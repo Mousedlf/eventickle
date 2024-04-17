@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Comedian{% endblock %}
+
+{% block body %}
+    <h1>Edit Comedian</h1>
+
+    {{ include('comedian/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('app_comedian_index') }}">back to list</a>
+
+    {{ include('comedian/_delete_form.html.twig') }}
+{% endblock %}

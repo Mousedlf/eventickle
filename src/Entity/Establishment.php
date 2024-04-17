@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: EstablishmentRepository::class)]
 class Establishment
@@ -14,24 +15,30 @@ class Establishment
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(["establishment:read"])]
     private ?int $id = null;
 
     /**
      * @var Collection<int, Event>
      */
     #[ORM\OneToMany(targetEntity: Event::class, mappedBy: 'location')]
+    #[Groups(["establishment:read"])]
     private Collection $events;
 
     #[ORM\Column(length: 255)]
+    #[Groups(["establishment:read"])]
     private ?string $siret = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(["establishment:read"])]
     private ?string $description = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $adress = null;
+    #[Groups(["establishment:read"])]
+    private ?string $address = null;
 
     #[ORM\Column(type: Types::ARRAY, nullable: true)]
+    #[Groups(["establishment:read"])]
     private ?array $accessibility = null;
 
     #[ORM\Column(length: 255)]
@@ -63,6 +70,9 @@ class Establishment
      */
     #[ORM\OneToMany(targetEntity: Booking::class, mappedBy: 'location')]
     private Collection $bookings;
+
+    #[ORM\OneToOne(inversedBy: 'establishment', cascade: ['persist', 'remove'])]
+    private ?User $ofUser = null;
 
     public function __construct()
     {
@@ -132,14 +142,14 @@ class Establishment
         return $this;
     }
 
-    public function getAdress(): ?string
+    public function getAddress(): ?string
     {
-        return $this->adress;
+        return $this->address;
     }
 
-    public function setAdress(string $adress): static
+    public function setAddress(string $address): static
     {
-        $this->adress = $adress;
+        $this->address = $address;
 
         return $this;
     }
@@ -284,6 +294,18 @@ class Establishment
                 $booking->setLocation(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getOfUser(): ?User
+    {
+        return $this->ofUser;
+    }
+
+    public function setOfUser(?User $ofUser): static
+    {
+        $this->ofUser = $ofUser;
 
         return $this;
     }
