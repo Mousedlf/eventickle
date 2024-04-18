@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Spectator;
+use App\Repository\SpectatorRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -14,12 +15,11 @@ use Symfony\Component\Serializer\SerializerInterface;
 #[Route('/api/spectator')]
 class SpectatorController extends AbstractController
 {
-    #[Route('/{id}/tickets', name: 'app_spectator')]
-    public function index(): Response
+    #[Route('/tickets', name: 'app_spectator')]
+    public function indexMyTickets(): Response
     {
-        return $this->render('spectator/index.html.twig', [
-            'controller_name' => 'SpectatorController',
-        ]);
+        $tickets = $this->getUser()->getSpectator()->getTickets();
+        return $this->json($tickets, Response::HTTP_OK, [], ['groups' => ['ticket:read']]);
     }
 
 

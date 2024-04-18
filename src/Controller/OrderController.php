@@ -6,6 +6,7 @@ use App\Entity\Event;
 use App\Entity\Order;
 use App\Entity\Ticket;
 use App\Repository\EventRepository;
+use App\Service\QRCodeService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,7 +18,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 #[Route('/api/order')]
 class OrderController extends AbstractController
 {
-    #[Route('s', name: 'app_order')]
+    #[Route('/all', name: 'app_order')]
     public function index(): Response
     {
         return $this->render('order/index.html.twig', [
