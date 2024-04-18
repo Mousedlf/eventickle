@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\TicketRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: TicketRepository::class)]
 class Ticket
@@ -11,6 +12,7 @@ class Ticket
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['comedy-club:read'])]
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'soldTickets')]
@@ -19,6 +21,7 @@ class Ticket
 
     #[ORM\ManyToOne(inversedBy: 'boughtTickets')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['comedy-club:read'])]
     private ?Spectator $boughtBy = null;
 
     #[ORM\Column]

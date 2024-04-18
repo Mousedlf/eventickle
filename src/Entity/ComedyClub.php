@@ -22,6 +22,7 @@ class ComedyClub
      * @var Collection<int, Event>
      */
     #[ORM\OneToMany(targetEntity: Event::class, mappedBy: 'comedyClub', orphanRemoval: true)]
+    #[Groups(['comedy-club:read'])]
     private Collection $organizedEvents;
 
     /**

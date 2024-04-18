@@ -15,7 +15,7 @@ class Event
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['establishment:read', 'event:read', 'invitation:read', 'comedian:read'])]
+    #[Groups(['establishment:read', 'event:read', 'invitation:read', 'comedian:read', 'comedy-club:read'])]
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'events')]
@@ -38,7 +38,7 @@ class Event
     private ?string $name = null;
 
     #[ORM\Column(type: Types::TEXT)]
-    #[Groups(['establishment:read', 'invitation:read'])]
+    #[Groups(['establishment:read', 'invitation:read', 'comedy-club:read'])]
     private ?string $description = null;
 
     #[ORM\Column]
@@ -53,14 +53,15 @@ class Event
      * @var Collection<int, Ticket>
      */
     #[ORM\OneToMany(targetEntity: Ticket::class, mappedBy: 'event', orphanRemoval: true)]
+    #[Groups(['comedy-club:read'])]
     private Collection $soldTickets;
 
     #[ORM\OneToOne(inversedBy: 'event', cascade: ['persist', 'remove'])]
-    #[Groups(['establishment:read', 'event:read'])]
+    #[Groups(['establishment:read', 'event:read', 'comedy-club:read'])]
     private ?Image $poster = null;
 
     #[ORM\Column]
-    #[Groups(['establishment:read', 'event:read'])]
+    #[Groups(['establishment:read', 'event:read', 'comedy-club:read'])]
     private ?bool $status = null;
 
     #[ORM\Column]

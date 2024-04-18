@@ -13,6 +13,7 @@ class Spectator
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['comedy-club:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]

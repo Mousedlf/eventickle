@@ -15,11 +15,11 @@ use Symfony\Component\Routing\Attribute\Route;
 class InvitationController extends AbstractController
 {
     #[Route('s', name: 'app_invitation')]
-    public function index(): Response
+    public function indexMyInvites(): Response
     {
-        return $this->render('invitation/index.html.twig', [
-            'controller_name' => 'InvitationController',
-        ]);
+//        $user = $this->getUser();
+//        $role = substr($this->getUser()->getRoles()[0], 5);
+//        $method
     }
 
     #[Route('/sendto/comedian/{id}', name: 'app_invitation_send_to_comedian')]
