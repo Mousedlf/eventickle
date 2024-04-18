@@ -16,13 +16,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 #[Route('/api/comedy/club')]
 class ComedyClubController extends AbstractController
 {
-    #[Route('/', name: 'app_comedy_club_index', methods: ['GET'])]
-    public function index(ComedyClubRepository $comedyClubRepository): Response
-    {
-        return $this->render('comedy_club/index.html.twig', [
-            'comedy_clubs' => $comedyClubRepository->findAll(),
-        ]);
-    }
+
 
     #[Route('/new', name: 'app_comedy_club_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager, SerializerInterface $serializer): Response
