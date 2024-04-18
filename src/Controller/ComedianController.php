@@ -22,11 +22,11 @@ class ComedianController extends AbstractController
         return $this->json($comedians, Response::HTTP_OK, [], ['groups' => ['comedian:read']]);
     }
 
-    #[Route('/new/{id}', name: 'app_comedian_new', methods: ['GET', 'POST'])]
-    public function new(User $user, Request $request, EntityManagerInterface $entityManager, SerializerInterface $serializer): Response
+    #[Route('/new', name: 'app_comedian_new', methods: ['GET', 'POST'])]
+    public function new(Request $request, EntityManagerInterface $entityManager, SerializerInterface $serializer): Response
     {
         $comedian = $serializer->deserialize($request->getContent(), Comedian::class, 'json');
-        $comedian->setOfUser($user);
+        $comedian->setOfUser($this->getUser());
         $entityManager->persist($comedian);
         $entityManager->flush();
 

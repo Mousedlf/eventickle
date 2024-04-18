@@ -17,10 +17,12 @@ class Invite
 
 
     #[ORM\ManyToOne(inversedBy: 'receivedInvites')]
+    #[Groups(['invitation:read'])]
     private ?Establishment $sentToEstablishment = null;
 
 
     #[ORM\ManyToOne(inversedBy: 'receivedInvites')]
+    #[Groups(['invitation:read'])]
     private ?Comedian $sentToComedian = null;
 
     #[ORM\ManyToOne(inversedBy: 'sentInvites')]

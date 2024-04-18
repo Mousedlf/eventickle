@@ -19,6 +19,7 @@ class Event
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'events')]
+    #[Groups(['event:read', 'invitation:read'])]
     private ?Establishment $location = null;
 
     /**
