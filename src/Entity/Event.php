@@ -60,9 +60,7 @@ class Event
     #[Groups(['establishment:read', 'event:read', 'comedy-club:read'])]
     private ?Image $poster = null;
 
-    #[ORM\Column]
-    #[Groups(['establishment:read', 'event:read', 'comedy-club:read'])]
-    private ?bool $status = null;
+
 
     #[ORM\Column]
     #[Groups(['establishment:read', 'event:read'])]

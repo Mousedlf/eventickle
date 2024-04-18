@@ -73,12 +73,7 @@ class EstablishmentController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_establishment_edit', methods: ['POST'])] // ROUTE A COMBINER AVEC NEW
-    public function edit(
-        Request $request,
-        Establishment $establishment,
-        EntityManagerInterface $manager,
-        SerializerInterface $serializer,
-        EquipmentRepository $equipmentRepository
+    public function edit(Request $request,Establishment $establishment, EntityManagerInterface $manager,SerializerInterface $serializer, EquipmentRepository $equipmentRepository
     ): Response
     {
 

@@ -34,23 +34,23 @@ class ComedyClubController extends AbstractController
         return $this->json($comedyClub, Response::HTTP_OK,[], ['groups' => 'comedy-club:read']);
     }
 
-    #[Route('/{id}/edit', name: 'app_comedy_club_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, ComedyClub $comedyClub, EntityManagerInterface $entityManager, SerializerInterface $serializer): Response
-    {
-        $form = $this->createForm(ComedyClubType::class, $comedyClub);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
-
-            return $this->redirectToRoute('app_comedy_club_index', [], Response::HTTP_SEE_OTHER);
-        }
-
-        return $this->render('comedy_club/edit.html.twig', [
-            'comedy_club' => $comedyClub,
-            'form' => $form,
-        ]);
-    }
+//    #[Route('/{id}/edit', name: 'app_comedy_club_edit', methods: ['GET', 'POST'])]
+//    public function edit(Request $request, ComedyClub $comedyClub, EntityManagerInterface $entityManager): Response
+//    {
+//        $form = $this->createForm(ComedyClubType::class, $comedyClub);
+//        $form->handleRequest($request);
+//
+//        if ($form->isSubmitted() && $form->isValid()) {
+//            $entityManager->flush();
+//
+//            return $this->redirectToRoute('app_comedy_club_index', [], Response::HTTP_SEE_OTHER);
+//        }
+//
+//        return $this->render('comedy_club/edit.html.twig', [
+//            'comedy_club' => $comedyClub,
+//            'form' => $form,
+//        ]);
+//    }
 
     #[Route('/{id}', name: 'app_comedy_club_delete', methods: ['POST'])]
     public function delete(Request $request, ComedyClub $comedyClub, EntityManagerInterface $entityManager): Response

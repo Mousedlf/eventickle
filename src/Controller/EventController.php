@@ -19,17 +19,21 @@ class EventController extends AbstractController
     #[Route('/all', name: 'app_event_index', methods: ['GET'])]
     public function index(EventRepository $eventRepository): Response
     {
-        return $this->render('event/index.html.twig', [
-            'events' => $eventRepository->findAll(),
-        ]);
+        return $this->json($eventRepository->findAll());
     }
 
+    #[Route('/{id}/validate', name: 'app_event_validate', methods: ['POST'])]
+    public function validateEvent(Event $event, Request $request, SerializerInterface $serializer): Response
+    {
+        $event->setStatus(2);
+        return $this->json("event validé");
+    }
     #[Route('/new', name: 'app_event_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager, SerializerInterface $serializer, ComedianRepository $comedianRepository): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, SerializerInterface $serializer): Response
     {
         $event = $serializer->deserialize($request->getContent(), Event::class, 'json');
         $event->setComedyClub($this->getUser()->getComedyClub());
-        $event->setStatus(false);
+        $event->setStatus(0);
 
         // ajout verif pour pas avoir 2 specatcles du meme nom/date/lieu
 
@@ -46,21 +50,17 @@ class EventController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_event_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Event $event, EntityManagerInterface $entityManager): Response
+    public function edit(
+        Request $request,
+        Event $event,
+        EntityManagerInterface $entityManager,
+        SerializerInterface $serializer): Response
     {
-        $form = $this->createForm(EventType::class, $event);
-        $form->handleRequest($request);
+        // ajour if
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
-
-            return $this->redirectToRoute('app_event_index', [], Response::HTTP_SEE_OTHER);
-        }
-
-        return $this->render('event/edit.html.twig', [
-            'event' => $event,
-            'form' => $form,
-        ]);
+        $editedEvent = $serializer->deserialize($request->getContent(), Event::class, 'json');
+        $entityManager->persist($editedEvent);
+        $entityManager->flush();
     }
 
     #[Route('/{id}/delete', name: 'app_event_delete', methods: ['DELETE'])]
