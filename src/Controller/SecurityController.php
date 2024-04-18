@@ -17,24 +17,9 @@ class SecurityController extends AbstractController
 
         $currentUserRole = $this->getUser()->getRoles()[0];
 
-        if($currentUserRole === 'ROLE_COMEDIAN') {
-           $role = "comedian";
-           $roleId= $this->getUser()->getComedian()->getId();
-        }
-        else if($currentUserRole === 'ROLE_CLUB') {
-            $role = "club";
-            $roleId= $this->getUser()->getClub()->getId();
-        }
-        else if($currentUserRole === 'ROLE_SPECTATOR') {
-            $role = "spectator";
-            $roleId= $this->getUser()->getSpectator()->getId();
-        }
-        else if($currentUserRole === 'ROLE_ESTABLISHMENT') {
-            $role = "establishment";
-            $roleId= $this->getUser()->getEstablishment()->getId();
-        }
-
-        
+        $role = strtolower(substr($currentUserRole, 5));
+        $method = "get".ucfirst($role)."()";
+        $roleId = $this->getUser()->$method->getId();
 
         $response = [
             "role" => $role,

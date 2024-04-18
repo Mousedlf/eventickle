@@ -15,7 +15,7 @@ class Comedian
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['indexComedians', 'comedian:read'])]
+    #[Groups(['indexComedians', 'comedian:read', 'event:read'])]
     private ?int $id = null;
 
     /**
@@ -26,11 +26,11 @@ class Comedian
     private Collection $events;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['indexComedians', 'comedian:read'])]
+    #[Groups(['indexComedians', 'comedian:read', 'event:read'])]
     private ?string $name = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['indexComedians', 'comedian:read'])]
+    #[Groups(['indexComedians', 'comedian:read', 'event:read'])]
     private ?string $surname = null;
 
     #[ORM\Column(type: Types::ARRAY, nullable: true)]
@@ -68,7 +68,7 @@ class Comedian
     private Collection $receivedInvites;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    #[Groups(['indexComedians', 'comedian:read'])]
+    #[Groups(['indexComedians', 'comedian:read', 'event:read'])]
     private ?string $description = null;
 
     #[ORM\OneToOne(inversedBy: 'comedian', cascade: ['persist', 'remove'])]

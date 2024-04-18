@@ -11,7 +11,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-#[Route('/api/invitation')]
+#[Route('/api/invite')]
 class InvitationController extends AbstractController
 {
     #[Route('s', name: 'app_invitation')]
@@ -61,15 +61,31 @@ class InvitationController extends AbstractController
     }
 
 
-//    #[Route('/accept/{id}', name: 'app_invitation_accept')]
-//    public function accetpInvite(Invite $invite){
-//        if(!$invite){
-//            return $this->json("Invitation not found", Response::HTTP_NOT_FOUND);
-//        }
-//        if ($invite->getSentToComedian()){
-//
-//        }else{
-//
-//        }
-//    }
+    #[Route('/accept/{id}', name: 'app_invitation_accept')]
+    public function accetpInvite(Invite $invite, EntityManagerInterface $manager){
+        if(!$invite){
+            return $this->json("Invitation not found", Response::HTTP_NOT_FOUND);
+        }
+        if ($invite->getSentToComedian()){
+            $comedian = $invite->getSentToComedian();
+            if($this->getUser()->getComedian()!==$comedian){
+                return $this->json("You cannot accept for others !");
+            }
+            $invite->setStatus(1);
+            $invite->getEvent()->addComedian($comedian);
+            $manager->persist($invite);
+            $manager->flush();
+        }else{
+            $establishment = $invite->getSentToEstablishment();
+            if($this->getUser()->getEstablishment()!==$establishment){
+                return $this->json("You cannot accept for others !");
+            }
+            $invite->setStatus(1);
+            $invite->getEvent()->setLocation($establishment);
+            $manager->persist($invite);
+            $manager->flush();
+        }
+
+        return $this->json("Invite accepted", Response::HTTP_OK, [], ['groups' => ['invitation:read', 'establishment:read', 'comedian:read']]);
+    }
 }
