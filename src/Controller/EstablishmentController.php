@@ -32,7 +32,7 @@ class EstablishmentController extends AbstractController
         EquipmentRepository $equipmentRepository
     ): Response
     {
-        if($this->getUser()->getEstablishment() == null){
+        if(in_array("ROLE_ESTABLISHMENT", $this->getUser()->getRoles())){
             return $this->json('you are not logged in as an establishment');
         }
 
