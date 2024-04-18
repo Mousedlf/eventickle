@@ -6,6 +6,7 @@ use App\Repository\ComedyClubRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: ComedyClubRepository::class)]
 class ComedyClub
@@ -13,9 +14,11 @@ class ComedyClub
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['comedian:read', 'establishment:read', 'comedy-club:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['comedian:read', 'establishment:read', 'comedy-club:read'])]
     private ?string $name = null;
 
     /**

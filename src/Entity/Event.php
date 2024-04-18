@@ -19,7 +19,7 @@ class Event
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'events')]
-    #[Groups(['event:read', 'invitation:read'])]
+    #[Groups(['event:read', 'invitation:read', 'comedian:read'])]
     private ?Establishment $location = null;
 
     /**
@@ -30,11 +30,11 @@ class Event
     private Collection $comedians;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
-    #[Groups(['establishment:read', 'event:read'])]
+    #[Groups(['establishment:read', 'event:read', 'comedian:read', 'comedy-club:read'])]
     private ?\DateTimeInterface $date = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['establishment:read', 'event:read', 'invitation:read'])]
+    #[Groups(['establishment:read', 'event:read', 'invitation:read', 'comedian:read', 'comedy-club:read'])]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::TEXT)]
@@ -46,7 +46,7 @@ class Event
     private ?float $price = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['establishment:read', 'event:read', 'invitation:read'])]
+    #[Groups(['establishment:read', 'event:read', 'invitation:read', 'comedian:read'])]
     private ?string $duration = null;
 
     /**

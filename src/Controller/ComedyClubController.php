@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Serializer\SerializerInterface;
 
-#[Route('/comedy/club')]
+#[Route('/api/comedy/club')]
 class ComedyClubController extends AbstractController
 {
     #[Route('/', name: 'app_comedy_club_index', methods: ['GET'])]
@@ -24,11 +24,11 @@ class ComedyClubController extends AbstractController
         ]);
     }
 
-    #[Route('/new/{id}', name: 'app_comedy_club_new', methods: ['GET', 'POST'])]
-    public function new(User $user, Request $request, EntityManagerInterface $entityManager, SerializerInterface $serializer): Response
+    #[Route('/new', name: 'app_comedy_club_new', methods: ['GET', 'POST'])]
+    public function new(Request $request, EntityManagerInterface $entityManager, SerializerInterface $serializer): Response
     {
         $comedyClub = $serializer->deserialize($request->getContent(), ComedyClub::class, 'json');
-        $comedyClub->setOfUser($user);
+        $comedyClub->setOfUser($this->getUser());
         $entityManager->persist($comedyClub);
         $entityManager->flush();
         return $this->json($comedyClub, Response::HTTP_CREATED, [], ["groups" => "comedy-club:read"]);
@@ -37,9 +37,7 @@ class ComedyClubController extends AbstractController
     #[Route('/{id}', name: 'app_comedy_club_show', methods: ['GET'])]
     public function show(ComedyClub $comedyClub): Response
     {
-        return $this->render('comedy_club/show.html.twig', [
-            'comedy_club' => $comedyClub,
-        ]);
+        return $this->json($comedyClub, Response::HTTP_OK,[], ['groups' => 'comedy-club:read']);
     }
 
     #[Route('/{id}/edit', name: 'app_comedy_club_edit', methods: ['GET', 'POST'])]

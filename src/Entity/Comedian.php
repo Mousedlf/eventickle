@@ -65,6 +65,7 @@ class Comedian
      * @var Collection<int, Invite>
      */
     #[ORM\OneToMany(targetEntity: Invite::class, mappedBy: 'sentToComedian')]
+    #[Groups(['comedian:read'])]
     private Collection $receivedInvites;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]

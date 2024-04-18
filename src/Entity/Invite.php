@@ -12,7 +12,7 @@ class Invite
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['establishment:read', 'invitation:read'])]
+    #[Groups(['establishment:read', 'invitation:read', 'comedian:read'])]
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'receivedInvites')]
@@ -24,15 +24,16 @@ class Invite
     private ?Comedian $sentToComedian = null;
 
     #[ORM\ManyToOne(inversedBy: 'sentInvites')]
-    #[Groups(['establishment:read', 'invitation:read'])]
+    #[Groups(['establishment:read', 'invitation:read', 'comedian:read'])]
     private ?ComedyClub $comedyClub = null;
 
     #[ORM\ManyToOne(inversedBy: 'invites')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['invitation:read'])]
+    #[Groups(['invitation:read', 'comedian:read'])]
     private ?Event $event = null;
 
     #[ORM\Column]
+    #[Groups(['comedian:read'])]
     private ?int $status = null;
 
     public function getId(): ?int

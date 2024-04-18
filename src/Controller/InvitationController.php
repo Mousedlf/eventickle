@@ -53,11 +53,9 @@ class InvitationController extends AbstractController
             }
             $invite->setSentToEstablishment($tmpEstablishment);
         }
-
         $manager->persist($invite);
         $manager->flush();
-
-        return $this->json($invite, Response::HTTP_OK, [], ['groups' => ['invitation:read', 'establishment:read', 'comedian:read']]);
+        return $this->json("Invite sent", Response::HTTP_OK);
     }
 
 
@@ -86,6 +84,6 @@ class InvitationController extends AbstractController
             $manager->flush();
         }
 
-        return $this->json("Invite accepted", Response::HTTP_OK, [], ['groups' => ['invitation:read', 'establishment:read', 'comedian:read']]);
+        return $this->json("Invite accepted", Response::HTTP_OK, [], ['groups' => ['invite-validation-event:read']]);
     }
 }
