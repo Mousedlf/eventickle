@@ -82,4 +82,9 @@ class EventController extends AbstractController
 
         return $this->json('Event deleted', Response::HTTP_SEE_OTHER);
     }
+
+    #[Route('/{id}/events', name: 'app_my_event_index', methods: ['DELETE'])]
+    public function myEvents(EventRepository $eventRepository): Response {
+        return $this->render('event/my_events.html.twig', []);
+    }
 }

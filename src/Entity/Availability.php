@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: AvailabilityRepository::class)]
 class Availability
@@ -14,15 +15,19 @@ class Availability
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['establishment:read'])]
     private ?int $id = null;
 
     #[ORM\Column(type: Types::ARRAY)]
+    #[Groups(['establishment:read'])]
     private array $dates = [];
 
     #[ORM\Column(nullable: true)]
+    #[Groups(['establishment:read'])]
     private ?int $capacity = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['establishment:read'])]
     private ?string $description = null;
 
     /**

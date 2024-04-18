@@ -3,8 +3,6 @@
 namespace App\Controller;
 
 use App\Entity\Comedian;
-use App\Entity\User;
-use App\Form\ComedianType;
 use App\Repository\ComedianRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;

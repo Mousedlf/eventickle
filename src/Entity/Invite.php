@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\InviteRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: InviteRepository::class)]
 class Invite
@@ -11,20 +12,28 @@ class Invite
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['establishment:read', 'invitation:read'])]
     private ?int $id = null;
 
 
     #[ORM\ManyToOne(inversedBy: 'receivedInvites')]
     private ?Establishment $sentToEstablishment = null;
 
-    #[ORM\Column]
-    private ?bool $status = null;
 
     #[ORM\ManyToOne(inversedBy: 'receivedInvites')]
     private ?Comedian $sentToComedian = null;
 
     #[ORM\ManyToOne(inversedBy: 'sentInvites')]
+    #[Groups(['establishment:read', 'invitation:read'])]
     private ?ComedyClub $comedyClub = null;
+
+    #[ORM\ManyToOne(inversedBy: 'invites')]
+    #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['invitation:read'])]
+    private ?Event $event = null;
+
+    #[ORM\Column]
+    private ?int $status = null;
 
     public function getId(): ?int
     {
@@ -44,17 +53,6 @@ class Invite
         return $this;
     }
 
-    public function isStatus(): ?bool
-    {
-        return $this->status;
-    }
-
-    public function setStatus(bool $status): static
-    {
-        $this->status = $status;
-
-        return $this;
-    }
 
     public function getSentToComedian(): ?Comedian
     {
@@ -79,4 +77,29 @@ class Invite
 
         return $this;
     }
+
+    public function getEvent(): ?Event
+    {
+        return $this->event;
+    }
+
+    public function setEvent(?Event $event): static
+    {
+        $this->event = $event;
+
+        return $this;
+    }
+
+    public function getStatus(): ?int
+    {
+        return $this->status;
+    }
+
+    public function setStatus(int $status): static
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+    
 }

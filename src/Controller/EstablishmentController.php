@@ -5,8 +5,10 @@ namespace App\Controller;
 use App\Entity\Establishment;
 use App\Entity\User;
 use App\Form\EstablishmentType;
+use App\Repository\EquipmentRepository;
 use App\Repository\EstablishmentRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use phpDocumentor\Reflection\Types\This;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,22 +20,47 @@ class EstablishmentController extends AbstractController
     #[Route('s', name: 'app_establishment_index', methods: ['GET'])]
     public function index(EstablishmentRepository $establishmentRepository): Response
     {
-
         $establishments = $establishmentRepository->findAll();
         return $this->json($establishments, Response::HTTP_OK, [], ['groups' => ['establishment:read']]);
     }
 
-    #[Route('/establishment/new/{id}', name: 'app_establishment_new', methods: ['POST'])]
+    #[Route('/new', name: 'app_establishment_new', methods: ['POST'])]
     public function new(
-        User $user,
         Request $request,
         EntityManagerInterface $entityManager,
-        SerializerInterface $serializer): Response
+        SerializerInterface $serializer,
+        EquipmentRepository $equipmentRepository
+    ): Response
     {
+        if($this->getUser()->getEstablishment() == null){
+            return $this->json('you are not logged in as an establishment');
+        }
+
+
         $establishment = $serializer->deserialize($request->getContent(), Establishment::class, 'json');
-        $serializer->setOfUser($user);
+
+        $establishment->setOfUser($this->getUser());
+
+        $req= json_decode($request->getContent(), true);
+        foreach($req["equipmentIds"] as $equipmentId){
+
+            $equipment = $equipmentRepository->findBy(['id' => $equipmentId]);
+
+            if(!$equipment){
+                return $this->json($equipmentId." doesn't exist", Response::HTTP_NOT_FOUND);
+            }
+
+            if($establishment->getEquipments()->contains($equipment)){
+                return $this->json($equipmentId." already added", Response::HTTP_NOT_FOUND);
+            }
+
+            $establishment->addEquipment($equipment[0]);
+
+        }
+
         $entityManager->persist($establishment);
         $entityManager->flush();
+
         return $this->json($establishment, Response::HTTP_CREATED, [], ["groups"=>"establishment:read"]);
     }
 
@@ -43,15 +70,43 @@ class EstablishmentController extends AbstractController
         return $this->json($establishment, Response::HTTP_OK, [], ['groups'=>['establishment:read']]);
     }
 
-    #[Route('/{id}/edit', name: 'app_establishment_edit', methods: ['GET', 'POST'])]
+    #[Route('/{id}/edit', name: 'app_establishment_edit', methods: ['POST'])] // ROUTE A COMBINER AVEC NEW
     public function edit(
         Request $request,
         Establishment $establishment,
-        EntityManagerInterface $entityManager,
-        SerializerInterface $serializer
+        EntityManagerInterface $manager,
+        SerializerInterface $serializer,
+        EquipmentRepository $equipmentRepository
     ): Response
     {
 
+        if($this->getUser()->getEstablishment() != $establishment){
+            return $this->json("you can't edit other comedians profiles", Response::HTTP_FORBIDDEN);
+        }
+
+        $editedEstablishment = $serializer->deserialize($request->getContent(), Establishment::class, 'json');
+
+        $req= json_decode($request->getContent(), true);
+        foreach($req["equipmentIds"] as $equipmentId){
+
+            $equipment = $equipmentRepository->findBy(['id' => $equipmentId]);
+
+            if(!$equipment){
+                return $this->json($equipmentId." doesn't exist", Response::HTTP_NOT_FOUND);
+            }
+
+            if($establishment->getEquipments()->contains($equipment)){
+                return $this->json($equipmentId." already added", Response::HTTP_NOT_FOUND);
+            }
+
+            $editedEstablishment->addEquipment($equipment[0]);
+
+        }
+
+        $manager->persist($editedEstablishment);
+        $manager->flush();
+
+        return $this->json($editedEstablishment, Response::HTTP_OK, [], ['groups'=>['establishment:read']]);
 
 
     }

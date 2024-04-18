@@ -37,9 +37,6 @@ class Establishment
     #[Groups(["establishment:read"])]
     private ?string $address = null;
 
-    #[ORM\Column(type: Types::ARRAY, nullable: true)]
-    #[Groups(["establishment:read"])]
-    private ?array $accessibility = null;
 
     #[ORM\Column(length: 255)]
     #[Groups(["establishment:read"])]
@@ -79,6 +76,12 @@ class Establishment
 
     #[ORM\OneToOne(inversedBy: 'establishment', cascade: ['persist', 'remove'])]
     private ?User $ofUser = null;
+
+    #[ORM\OneToOne(mappedBy: 'establishment', cascade: ['persist', 'remove'])]
+    #[Groups(["establishment:read"])]
+    private ?Image $image = null;
+
+    //-------------------------------------------------------------------
 
     public function __construct()
     {
@@ -156,18 +159,6 @@ class Establishment
     public function setAddress(string $address): static
     {
         $this->address = $address;
-
-        return $this;
-    }
-
-    public function getAccessibility(): ?array
-    {
-        return $this->accessibility;
-    }
-
-    public function setAccessibility(?array $accessibility): static
-    {
-        $this->accessibility = $accessibility;
 
         return $this;
     }
@@ -315,4 +306,30 @@ class Establishment
 
         return $this;
     }
+
+    public function getImage(): ?Image
+    {
+        return $this->image;
+    }
+
+    public function setImage(?Image $image): static
+    {
+        // unset the owning side of the relation if necessary
+        if ($image === null && $this->image !== null) {
+            $this->image->setEstablishment(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($image !== null && $image->getEstablishment() !== $this) {
+            $image->setEstablishment($this);
+        }
+
+        $this->image = $image;
+
+        return $this;
+    }
+
+
+
+
 }

@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: EventRepository::class)]
 class Event
@@ -14,6 +15,7 @@ class Event
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['establishment:read', 'event:read', 'invitation:read'])]
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'events')]
@@ -23,21 +25,27 @@ class Event
      * @var Collection<int, Comedian>
      */
     #[ORM\ManyToMany(targetEntity: Comedian::class, inversedBy: 'events')]
+    #[Groups(['establishment:read', 'event:read', 'invitation:read'])]
     private Collection $comedians;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[Groups(['establishment:read', 'event:read'])]
     private ?\DateTimeInterface $date = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['establishment:read', 'event:read', 'invitation:read'])]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Groups(['establishment:read', 'invitation:read'])]
     private ?string $description = null;
 
     #[ORM\Column]
+    #[Groups(['establishment:read', 'event:read', 'invitation:read'])]
     private ?float $price = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['establishment:read', 'event:read', 'invitation:read'])]
     private ?string $duration = null;
 
     /**
@@ -47,16 +55,20 @@ class Event
     private Collection $soldTickets;
 
     #[ORM\OneToOne(inversedBy: 'event', cascade: ['persist', 'remove'])]
+    #[Groups(['establishment:read', 'event:read'])]
     private ?Image $poster = null;
 
     #[ORM\Column]
+    #[Groups(['establishment:read', 'event:read'])]
     private ?bool $status = null;
 
     #[ORM\Column]
+    #[Groups(['establishment:read', 'event:read'])]
     private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\ManyToOne(inversedBy: 'organizedEvents')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['establishment:read', 'event:read'])]
     private ?ComedyClub $comedyClub = null;
 
     /**
@@ -65,11 +77,18 @@ class Event
     #[ORM\OneToMany(targetEntity: Booking::class, mappedBy: 'event', orphanRemoval: true)]
     private Collection $bookings;
 
+    /**
+     * @var Collection<int, Invite>
+     */
+    #[ORM\OneToMany(targetEntity: Invite::class, mappedBy: 'event', orphanRemoval: true)]
+    private Collection $invites;
+
     public function __construct()
     {
         $this->comedians = new ArrayCollection();
         $this->soldTickets = new ArrayCollection();
         $this->bookings = new ArrayCollection();
+        $this->invites = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -275,6 +294,36 @@ class Event
             // set the owning side to null (unless already changed)
             if ($booking->getEvent() === $this) {
                 $booking->setEvent(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Invite>
+     */
+    public function getInvites(): Collection
+    {
+        return $this->invites;
+    }
+
+    public function addInvite(Invite $invite): static
+    {
+        if (!$this->invites->contains($invite)) {
+            $this->invites->add($invite);
+            $invite->setEvent($this);
+        }
+
+        return $this;
+    }
+
+    public function removeInvite(Invite $invite): static
+    {
+        if ($this->invites->removeElement($invite)) {
+            // set the owning side to null (unless already changed)
+            if ($invite->getEvent() === $this) {
+                $invite->setEvent(null);
             }
         }
 

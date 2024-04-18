@@ -19,6 +19,11 @@ class Image
     #[ORM\OneToOne(mappedBy: 'profilePicture', cascade: ['persist', 'remove'])]
     private ?Comedian $comedian = null;
 
+    #[ORM\OneToOne(inversedBy: 'image', cascade: ['persist', 'remove'])]
+    private ?Establishment $establishment = null;
+
+
+
     public function getId(): ?int
     {
         return $this->id;
@@ -67,4 +72,18 @@ class Image
 
         return $this;
     }
+
+    public function getEstablishment(): ?Establishment
+    {
+        return $this->establishment;
+    }
+
+    public function setEstablishment(?Establishment $establishment): static
+    {
+        $this->establishment = $establishment;
+
+        return $this;
+    }
+
+
 }
