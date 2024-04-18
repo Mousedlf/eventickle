@@ -34,7 +34,7 @@ class RegistrationController extends AbstractController
         $entityManager->persist($user);
         $entityManager->flush();
 
-        $url = "/".$tmprole."/new/".$user->getId();
+        $url = "/".$tmprole."/new"; //.$user->getId()
         
         return $this->json($url, Response::HTTP_CREATED);
     }

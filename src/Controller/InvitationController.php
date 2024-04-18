@@ -25,26 +25,38 @@ class InvitationController extends AbstractController
     #[Route('/sendto/comedian/{id}', name: 'app_invitation_send_to_comedian')]
     #[Route('/sendto/establishment/{id}', name: 'app_invitation_send_to_establishment')]
     public function sendInvite($id, Request $request, ComedianRepository $comedianRepository, EstablishmentRepository $establishmentRepository, EntityManagerInterface $manager, EventRepository $eventRepository): Response{
+
         $route = $request->attributes->get('_route');
+
         $invite = new Invite();
         $invite->setEvent($eventRepository->find($request->getPayload()->get("event")));
         $invite->setStatus(false);
         $invite->setComedyClub($this->getUser()->getComedyClub());
+
         if ($route == "app_invitation_send_to_comedian"){
             $tmpComedian = $comedianRepository->find($id);
+
             if (!$tmpComedian){
                 return $this->json("Comedian not found");
             }
+
+            if($tmpComedian->getReceivedInvites()->contains($invite)){
+                return $this->json("Invitation already sent");
+            }
+
             $invite->setSentToComedian($tmpComedian);
-        }else{
+        }
+        else{
             $tmpEstablishment = $establishmentRepository->find($id);
             if (!$tmpEstablishment){
                 return $this->json("Establishment not found");
             }
             $invite->setSentToEstablishment($tmpEstablishment);
         }
+
         $manager->persist($invite);
         $manager->flush();
+
         return $this->json($invite, Response::HTTP_OK, [], ['groups' => ['invitation:read', 'establishment:read', 'comedian:read']]);
     }
 

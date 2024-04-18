@@ -15,7 +15,7 @@ class Event
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['establishment:read', 'event:read', 'invitation:read'])]
+    #[Groups(['establishment:read', 'event:read', 'invitation:read', 'comedian:read'])]
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'events')]

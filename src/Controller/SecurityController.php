@@ -17,7 +17,6 @@ class SecurityController extends AbstractController
 
         $currentUserRole = $this->getUser()->getRoles()[0];
 
-
         if($currentUserRole === 'ROLE_COMEDIAN') {
            $role = "comedian";
            $roleId= $this->getUser()->getComedian()->getId();
@@ -42,38 +41,15 @@ class SecurityController extends AbstractController
             "roleId"=> $roleId
         ];
 
-
         return $this->json($response, Response::HTTP_OK);
 
     }
 
 
 
-
-
-
     #[Route(path: '/login', name: 'app_login')]
     public function login(AuthenticationUtils $authenticationUtils, Request $request): Response
     {
-
-        if(
-            $this->getUser()->getComedian() == null
-            OR $this->getUser()->getSpectator() == null
-            OR $this->getUser()->getEstablishment() == null
-            OR $this->getUser()->getComedyClub() == null
-        ){
-            return $this->json("/".$this->getUser()->getRoles()[0]."/new/".$this->getUser()->getId(), Response::HTTP_UNAUTHORIZED);
-        }
-
-
-        // if ($this->getUser()) {
-        //     return $this->redirectToRoute('target_path');
-        // }
-
-        // get the login error if there is one
-        $error = $authenticationUtils->getLastAuthenticationError();
-        // last username entered by the user
-        $lastUsername = $authenticationUtils->getLastUsername();
 
         return $this->render('security/login.html.twig', ['last_username' => $lastUsername, 'error' => $error]);
     }
