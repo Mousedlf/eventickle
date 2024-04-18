@@ -16,7 +16,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 #[Route('/api/event')]
 class EventController extends AbstractController
 {
-    #[Route('/', name: 'app_event_index', methods: ['GET'])]
+    #[Route('/all', name: 'app_event_index', methods: ['GET'])]
     public function index(EventRepository $eventRepository): Response
     {
         return $this->render('event/index.html.twig', [
@@ -75,6 +75,9 @@ class EventController extends AbstractController
 
         return $this->json('Event deleted', Response::HTTP_SEE_OTHER);
     }
+
+
+
 
 
 }

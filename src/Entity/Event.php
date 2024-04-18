@@ -85,6 +85,12 @@ class Event
     #[ORM\OneToMany(targetEntity: Invite::class, mappedBy: 'event', orphanRemoval: true)]
     private Collection $invites;
 
+    #[ORM\Column]
+    private ?int $requiredComedians = null;
+
+    #[ORM\Column]
+    private ?int $status = null;
+
     public function __construct()
     {
         $this->comedians = new ArrayCollection();
@@ -236,17 +242,6 @@ class Event
         return $this;
     }
 
-    public function isStatus(): ?bool
-    {
-        return $this->status;
-    }
-
-    public function setStatus(bool $status): static
-    {
-        $this->status = $status;
-
-        return $this;
-    }
 
     public function getCreatedAt(): ?\DateTimeImmutable
     {
@@ -328,6 +323,30 @@ class Event
                 $invite->setEvent(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getRequiredComedians(): ?int
+    {
+        return $this->requiredComedians;
+    }
+
+    public function setRequiredComedians(int $requiredComedians): static
+    {
+        $this->requiredComedians = $requiredComedians;
+
+        return $this;
+    }
+
+    public function getStatus(): ?int
+    {
+        return $this->status;
+    }
+
+    public function setStatus(int $status): static
+    {
+        $this->status = $status;
 
         return $this;
     }
