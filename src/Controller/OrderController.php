@@ -29,7 +29,7 @@ class OrderController extends AbstractController
 
 
     #[Route('/make/{id}', name: 'make', methods: ['POST'])]
-    public function makeOrder(Request $request, Event $event, SerializerInterface $serializer, EntityManagerInterface $entityManager, EventRepository $repository): Response{
+    public function makeOrder(Request $request, Event $event, SerializerInterface $serializer, EntityManagerInterface $entityManager, EventRepository $repository, QRCodeService $service): Response{
         $order = $serializer->deserialize($request->getContent(), Order::class, 'json');
         $order->setMadeBy($this->getUser());
 
@@ -42,7 +42,8 @@ class OrderController extends AbstractController
             $ticket->setSpectator($this->getUser()->getSpectator());
             $ticket->setUsed(false);
             $ticket->setPrice($event->getPrice());
-            $ticket->setQrCode("lallajesuisunqrcode");
+            $qr = $service->createQrCode("http://localhost:8000/api/ticket/validate/".$ticket->getId());
+            $ticket->setQrCode($qr);
             $entityManager->persist($ticket);
             $order->addTicket($ticket);
         }

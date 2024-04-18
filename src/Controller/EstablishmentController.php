@@ -41,21 +41,24 @@ class EstablishmentController extends AbstractController
         $establishment->setOfUser($this->getUser());
 
         $req= json_decode($request->getContent(), true);
-        foreach($req["equipmentIds"] as $equipmentId){
+        if($req["equipmentIds"]){
+            foreach($req["equipmentIds"] as $equipmentId){
 
-            $equipment = $equipmentRepository->findBy(['id' => $equipmentId]);
+                $equipment = $equipmentRepository->findBy(['id' => $equipmentId]);
 
-            if(!$equipment){
-                return $this->json($equipmentId." doesn't exist", Response::HTTP_NOT_FOUND);
+                if(!$equipment){
+                    return $this->json($equipmentId." doesn't exist", Response::HTTP_NOT_FOUND);
+                }
+
+                if($establishment->getEquipments()->contains($equipment)){
+                    return $this->json($equipmentId." already added", Response::HTTP_NOT_FOUND);
+                }
+
+                $establishment->addEquipment($equipment[0]);
+
             }
-
-            if($establishment->getEquipments()->contains($equipment)){
-                return $this->json($equipmentId." already added", Response::HTTP_NOT_FOUND);
-            }
-
-            $establishment->addEquipment($equipment[0]);
-
         }
+
 
         $entityManager->persist($establishment);
         $entityManager->flush();
