@@ -35,7 +35,7 @@ class ComedyClubController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_comedy_club_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, ComedyClub $comedyClub, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, ComedyClub $comedyClub, EntityManagerInterface $entityManager, SerializerInterface $serializer): Response
     {
         $form = $this->createForm(ComedyClubType::class, $comedyClub);
         $form->handleRequest($request);
