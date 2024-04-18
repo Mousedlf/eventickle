@@ -36,7 +36,6 @@ class EstablishmentController extends AbstractController
             return $this->json('you are not logged in as an establishment');
         }
 
-
         $establishment = $serializer->deserialize($request->getContent(), Establishment::class, 'json');
 
         $establishment->setOfUser($this->getUser());

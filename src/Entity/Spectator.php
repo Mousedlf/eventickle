@@ -14,28 +14,33 @@ class Spectator
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['comedy-club:read'])]
+    #[Groups(['comedy-club:read', 'spectator:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['spectator:read'])]
     private ?string $name = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['spectator:read'])]
     private ?string $surname = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Groups(['spectator:read'])]
     private ?string $phoneNumber = null;
 
     /**
      * @var Collection<int, Comedian>
      */
     #[ORM\ManyToMany(targetEntity: Comedian::class, mappedBy: 'followers')]
+    #[Groups(['spectator:read'])]
     private Collection $followedComedians;
 
     /**
      * @var Collection<int, Ticket>
      */
     #[ORM\OneToMany(targetEntity: Ticket::class, mappedBy: 'boughtBy', orphanRemoval: true)]
+    #[Groups(['spectator:read'])]
     private Collection $boughtTickets;
 
     /**

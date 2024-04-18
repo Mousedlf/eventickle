@@ -12,30 +12,42 @@ class Ticket
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['comedy-club:read'])]
+    #[Groups(['comedy-club:read', 'ticket:read', 'order:read'])]
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'soldTickets')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['ticket:read'])]
     private ?Event $event = null;
 
     #[ORM\ManyToOne(inversedBy: 'boughtTickets')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['comedy-club:read'])]
+    #[Groups(['comedy-club:read','ticket:read'])]
     private ?Spectator $boughtBy = null;
 
     #[ORM\Column]
+    #[Groups(['ticket:read'])]
     private ?float $price = null;
 
     #[ORM\Column]
+    #[Groups(['ticket:read'])]
     private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\Column(length: 2000)]
+    #[Groups(['ticket:read'])]
     private ?string $qrCode = null;
 
     #[ORM\ManyToOne(inversedBy: 'tickets')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Spectator $spectator = null;
+
+    #[ORM\ManyToOne(inversedBy: 'tickets')]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?Order $ofOrder = null;
+
+    #[ORM\Column]
+    #[Groups(['ticket:read'])]
+    private ?bool $used = null;
 
     public function getId(): ?int
     {
@@ -110,6 +122,30 @@ class Ticket
     public function setSpectator(?Spectator $spectator): static
     {
         $this->spectator = $spectator;
+
+        return $this;
+    }
+
+    public function getOfOrder(): ?Order
+    {
+        return $this->ofOrder;
+    }
+
+    public function setOfOrder(?Order $ofOrder): static
+    {
+        $this->ofOrder = $ofOrder;
+
+        return $this;
+    }
+
+    public function isUsed(): ?bool
+    {
+        return $this->used;
+    }
+
+    public function setUsed(bool $used): static
+    {
+        $this->used = $used;
 
         return $this;
     }
