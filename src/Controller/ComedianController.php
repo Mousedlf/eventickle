@@ -13,10 +13,10 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Serializer\SerializerInterface;
 
-
+#[Route('/api/comedian')]
 class ComedianController extends AbstractController
 {
-    #[Route('/comedians', name: 'app_comedian_index', methods: ['GET'])]
+    #[Route('s', name: 'app_comedian_index', methods: ['GET'])]
     public function index(ComedianRepository $comedianRepository): Response
     {
         $comedians = $comedianRepository->findAll();
@@ -24,7 +24,7 @@ class ComedianController extends AbstractController
         return $this->json($comedians, Response::HTTP_OK, [], ['groups' => ['comedian:read']]);
     }
 
-    #[Route('/comedian/new/{id}', name: 'app_comedian_new', methods: ['GET', 'POST'])]
+    #[Route('/new/{id}', name: 'app_comedian_new', methods: ['GET', 'POST'])]
     public function new(User $user, Request $request, EntityManagerInterface $entityManager, SerializerInterface $serializer): Response
     {
         $comedian = $serializer->deserialize($request->getContent(), Comedian::class, 'json');
@@ -35,13 +35,13 @@ class ComedianController extends AbstractController
         return $this->json($comedian, Response::HTTP_CREATED, [], ['groups' => ['comedian:read']]);
     }
 
-    #[Route('/comedian/{id}', name: 'app_comedian_show', methods: ['GET'])]
+    #[Route('/{id}', name: 'app_comedian_show', methods: ['GET'])]
     public function show(Comedian $comedian): Response
     {
         return $this->json($comedian, Response::HTTP_OK, [], ['groups' => ['comedian:read']]);
     }
 
-    #[Route('/api/comedian/{id}/edit', name: 'app_comedian_edit', methods: ['PUT'])]
+    #[Route('/{id}/edit', name: 'app_comedian_edit', methods: ['PUT'])]
     public function edit(
         Request $request,
         Comedian $comedian,
@@ -62,14 +62,16 @@ class ComedianController extends AbstractController
 
     }
 
-    #[Route('/{id}', name: 'app_comedian_delete', methods: ['POST'])]
-    public function delete(Request $request, Comedian $comedian, EntityManagerInterface $entityManager): Response
+    #[Route('/{id}/delete', name: 'app_comedian_delete', methods: ['DELETE'])]
+    public function delete( Comedian $comedian, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$comedian->getId(), $request->getPayload()->get('_token'))) {
-            $entityManager->remove($comedian);
-            $entityManager->flush();
+        if($this->getUser()->getComedian() != $comedian){
+            return $this->json("you can't edit other comedians profiles", Response::HTTP_FORBIDDEN);
         }
 
-        return $this->redirectToRoute('app_comedian_index', [], Response::HTTP_SEE_OTHER);
+        $entityManager->remove($comedian);
+        $entityManager->flush();
+
+        return $this->json('comedian deleted',  Response::HTTP_SEE_OTHER);
     }
 }

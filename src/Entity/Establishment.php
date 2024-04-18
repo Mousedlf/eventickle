@@ -42,33 +42,39 @@ class Establishment
     private ?array $accessibility = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(["establishment:read"])]
     private ?string $name = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(["establishment:read"])]
     private ?string $phoneNumber = null;
 
     /**
      * @var Collection<int, Invite>
      */
     #[ORM\OneToMany(targetEntity: Invite::class, mappedBy: 'sentToEstablishment')]
+    #[Groups(["establishment:read"])]
     private Collection $receivedInvites;
 
     /**
      * @var Collection<int, Availability>
      */
     #[ORM\ManyToMany(targetEntity: Availability::class, inversedBy: 'establishments')]
+    #[Groups(["establishment:read"])]
     private Collection $availabilities;
 
     /**
      * @var Collection<int, Equipment>
      */
     #[ORM\ManyToMany(targetEntity: Equipment::class, inversedBy: 'establishments')]
+    #[Groups(["establishment:read"])]
     private Collection $equipments;
 
     /**
      * @var Collection<int, Booking>
      */
     #[ORM\OneToMany(targetEntity: Booking::class, mappedBy: 'location')]
+    #[Groups(["establishment:read"])]
     private Collection $bookings;
 
     #[ORM\OneToOne(inversedBy: 'establishment', cascade: ['persist', 'remove'])]
