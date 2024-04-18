@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route('/event')]
+#[Route('/api/event')]
 class EventController extends AbstractController
 {
     #[Route('/', name: 'app_event_index', methods: ['GET'])]
@@ -70,14 +70,16 @@ class EventController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_event_delete', methods: ['POST'])]
-    public function delete(Request $request, Event $event, EntityManagerInterface $entityManager): Response
+    #[Route('/{id}/delete', name: 'app_event_delete', methods: ['DELETE'])]
+    public function delete(Event $event, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$event->getId(), $request->getPayload()->get('_token'))) {
-            $entityManager->remove($event);
-            $entityManager->flush();
+        if ($this->getUser()->getEvent() != $event) {
+            return $this->json("you can't edit other event profiles", Response::HTTP_FORBIDDEN);
         }
 
-        return $this->redirectToRoute('app_event_index', [], Response::HTTP_SEE_OTHER);
+        $entityManager->remove($event);
+        $entityManager->flush();
+
+        return $this->json('Event deleted', Response::HTTP_SEE_OTHER);
     }
 }
