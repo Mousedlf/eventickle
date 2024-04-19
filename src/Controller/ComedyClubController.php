@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Serializer\SerializerInterface;
 
-#[Route('/api/comedy/club')]
+#[Route('/api/club')]
 class ComedyClubController extends AbstractController
 {
 

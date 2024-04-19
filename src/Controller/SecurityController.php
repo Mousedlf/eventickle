@@ -14,33 +14,19 @@ class SecurityController extends AbstractController
     #[Route('/api/current/user', name: 'login')]
     public function getCurrentUserInfo(UserRepository $userRepository): Response
     {
-
         $currentUserRole = $this->getUser()->getRoles()[0];
 
-       # $role = strtolower(substr($currentUserRole, 5));
-       # $method = "get".ucfirst($role)."()";
-       # $roleId = $this->getUser()->$method->getId();
+        $role = strtolower(substr($currentUserRole, 5));
+        $method = "get".ucfirst($role);
 
-        if($currentUserRole === 'ROLE_COMEDIAN') {
-            $role = "comedian";
-            $roleId = $this->getUser()->getComedian()->getId();
-        }
-        elseif($currentUserRole === 'ROLE_SPECTATOR') {
-            $role = "spectator";
-            $roleId = $this->getUser()->getSpectator()->getId();
-        }
-        elseif ($currentUserRole === 'ROLE_CLUB') {
-            $role = "club";
-            $roleId = $this->getUser()->getClub()->getId();
-        }
-        elseif ($currentUserRole === 'ROLE_ESTABLISHMENT') {
-            $role = "establishment";
-            $roleId = $this->getUser()->getEstablishment()->getId();
+        $method = $this->getUser()->$method();
+        if (!$method){
+            return $this->json($currentUserRole);
         }
 
         $response = [
             "role" => $role,
-            "roleId"=> $roleId
+            "roleId"=> $method->getId()
         ];
 
         return $this->json($response, Response::HTTP_OK);
