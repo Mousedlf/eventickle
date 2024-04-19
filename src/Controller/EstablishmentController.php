@@ -41,6 +41,7 @@ class EstablishmentController extends AbstractController
         $establishment->setOfUser($this->getUser());
 
         $req= json_decode($request->getContent(), true);
+
         if($req["equipmentIds"]){
             foreach($req["equipmentIds"] as $equipmentId){
 
@@ -78,10 +79,17 @@ class EstablishmentController extends AbstractController
     {
 
         if($this->getUser()->getEstablishment() != $establishment){
-            return $this->json("you can't edit other comedians profiles", Response::HTTP_FORBIDDEN);
+            return $this->json("not your establishment", Response::HTTP_FORBIDDEN);
         }
 
         $editedEstablishment = $serializer->deserialize($request->getContent(), Establishment::class, 'json');
+        $establishment->setName($editedEstablishment->getName());
+        $establishment->setOfUser($this->getUser());
+        $establishment->setDescription($editedEstablishment->getDescription());
+        $establishment->setPhoneNumber($editedEstablishment->getPhoneNumber());
+        $establishment->setAddress($editedEstablishment->getAddress());
+        $establishment->setSiret($editedEstablishment->getSiret());
+
 
         $req= json_decode($request->getContent(), true);
         foreach($req["equipmentIds"] as $equipmentId){
@@ -96,14 +104,14 @@ class EstablishmentController extends AbstractController
                 return $this->json($equipmentId." already added", Response::HTTP_NOT_FOUND);
             }
 
-            $editedEstablishment->addEquipment($equipment[0]);
+            $establishment->addEquipment($equipment[0]);
 
         }
 
-        $manager->persist($editedEstablishment);
+        $manager->persist($establishment);
         $manager->flush();
 
-        return $this->json($editedEstablishment, Response::HTTP_OK, [], ['groups'=>['establishment:read']]);
+        return $this->json($establishment, Response::HTTP_OK, [], ['groups'=>['establishment:read']]);
 
 
     }

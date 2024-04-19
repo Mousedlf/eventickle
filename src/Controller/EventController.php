@@ -56,11 +56,23 @@ class EventController extends AbstractController
         EntityManagerInterface $entityManager,
         SerializerInterface $serializer): Response
     {
-        // ajour if
+
+        if ($this->getUser()->getComedyClub() != $event->getComedyClub()) {
+            return $this->json("not your event to edit", Response::HTTP_FORBIDDEN);
+        }
 
         $editedEvent = $serializer->deserialize($request->getContent(), Event::class, 'json');
-        $entityManager->persist($editedEvent);
+
+        $event->setName($editedEvent->getName());
+        $event->setDescription($editedEvent->getDescription());
+        $event->setLocation($editedEvent->getLocation());
+        $event->setDate($editedEvent->getDate());
+      //  $event->set
+
+        $entityManager->persist($event);
         $entityManager->flush();
+
+        return $this->json($event, Response::HTTP_OK, [], ["groups" => "event:read"]);
     }
 
     #[Route('/{id}/delete', name: 'app_event_delete', methods: ['DELETE'])]
