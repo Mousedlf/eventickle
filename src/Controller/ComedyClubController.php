@@ -4,7 +4,6 @@ namespace App\Controller;
 
 use App\Entity\ComedyClub;
 use App\Entity\User;
-use App\Form\ComedyClubType;
 use App\Repository\ComedyClubRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;

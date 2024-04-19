@@ -4,7 +4,6 @@ namespace App\Controller;
 
 use App\Entity\Establishment;
 use App\Entity\User;
-use App\Form\EstablishmentType;
 use App\Repository\EquipmentRepository;
 use App\Repository\EstablishmentRepository;
 use Doctrine\ORM\EntityManagerInterface;

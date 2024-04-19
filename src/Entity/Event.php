@@ -83,8 +83,6 @@ class Event
     #[ORM\OneToMany(targetEntity: Invite::class, mappedBy: 'event', orphanRemoval: true)]
     private Collection $invites;
 
-    #[ORM\Column]
-    private ?int $requiredComedians = null;
 
     #[ORM\Column]
     private ?int $status = null;
@@ -325,17 +323,6 @@ class Event
         return $this;
     }
 
-    public function getRequiredComedians(): ?int
-    {
-        return $this->requiredComedians;
-    }
-
-    public function setRequiredComedians(int $requiredComedians): static
-    {
-        $this->requiredComedians = $requiredComedians;
-
-        return $this;
-    }
 
     public function getStatus(): ?int
     {

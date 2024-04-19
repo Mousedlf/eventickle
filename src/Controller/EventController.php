@@ -3,8 +3,6 @@
 namespace App\Controller;
 
 use App\Entity\Event;
-use App\Form\EventType;
-use App\Repository\ComedianRepository;
 use App\Repository\EventRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -25,9 +23,16 @@ class EventController extends AbstractController
     #[Route('/{id}/validate', name: 'app_event_validate', methods: ['POST'])]
     public function validateEvent(Event $event, Request $request, SerializerInterface $serializer): Response
     {
+        if (sizeof($event->getComedians())<3) {
+            return $this->json("You don't have the required comedians.");
+        }
+        if(!$event->getLocation()) {
+            return$this->json("You don't have a location for your event !");
+        }
         $event->setStatus(2);
         return $this->json("event validé");
     }
+
     #[Route('/new', name: 'app_event_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager, SerializerInterface $serializer): Response
     {
